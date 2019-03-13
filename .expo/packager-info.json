@@ -1,0 +1,9 @@
+{
+  "expoServerNgrokUrl": "https://ib-mbx.harsha.app.exp.direct",
+  "packagerNgrokUrl": "https://packager.ib-mbx.harsha.app.exp.direct",
+  "ngrokPid": 6856,
+  "devToolsPort": 19002,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null
+}

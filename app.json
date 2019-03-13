@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "App",
+    "slug": "App",
+    "privacy": "public",
+    "sdkVersion": "32.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "sliit.com.lk"
+    },
+    "isDetached": true,
+    "detach": {},
+    "scheme": "exp0b0ddd4a3a184308abe1791924120331"
+  }
+}
