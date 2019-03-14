@@ -10,11 +10,14 @@ import {
   TextInput,
   Dimensions,
   TouchableOpacity,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ActivityIndicator
 } from "react-native";
-import Icon from "react-native-vector-icons/EvilIcons"; 
+import Icon from "react-native-vector-icons/EvilIcons";
+import FlashMessage, { showMessage } from "react-native-flash-message";
 
 import { storeUserInfo } from "../../Action/Login/reducerAction.js";
+import { updateDummyEmployeeData } from "../../Action/Login";
 
 const { width: WIDTH } = Dimensions.get("window");
 
@@ -22,7 +25,10 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      text: ""
+      showLoading: false,
+      name: "",
+      age: "",
+      salary: ""
     };
   }
 
@@ -35,28 +41,70 @@ class App extends React.Component {
     }
   };
 
-  ccomponentWillMount() { 
-  }
+  componentWillMount() {}
 
-  saveInfo = () => {
-        user ={
-            "employee_age": "22",
-            "employee_name": this.state.text,
-            "employee_salary": "60679",
-            "id": "7331",
-            "profile_image": "",
-        }
+  onSubmitPressed = async () => {
+    if (
+      this.state.name == "" ||
+      this.state.salary == "" ||
+      this.state.age == ""
+    ) {
+      showMessage({
+        message: "Required All Fields",
+        type: "info",
+        backgroundColor: "#cc0066"
+      });
+    } else {
+      this.setState({ showLoading: true });
+      //setTimeout(() => {
+      let response = await updateDummyEmployeeData(
+        this.props.userInfo.id,
+        this.state.name,
+        this.state.salary,
+        this.state.age
+      );
+      let responseJson = await response.json();
+      if (response.status >= 200 && response.status < 300) {
+        this.setState({ showLoading: false });
+        user = {
+          employee_age: responseJson.age,
+          employee_name: responseJson.name,
+          employee_salary: responseJson.salary,
+          id: this.props.userInfo.id,
+          profile_image: ""
+        };
         this.props.getUserInfo(user);
-        alert('Saved'); 
-  }
+        showMessage({
+          message: "Update Successfully Completed",
+          type: "info",
+          backgroundColor: "#cc0066"
+        });
+      } else if (response.status >= 400 && response.status < 500) {
+        this.setState({ showLoading: false });
+        showMessage({
+          message: "Check Your Internet Connection",
+          type: "info",
+          backgroundColor: "#cc0066"
+        });
+      } else {
+        this.setState({ showLoading: false });
+        showMessage({
+          message: "Web Api error",
+          type: "info",
+          backgroundColor: "#cc0066"
+        });
+      }
+      // }, 3000);
+    }
+  };
 
   render() {
     return (
       <View style={styles.container}>
         <View style={{ marginTop: 30 }}>
           <TextInput
-            onChangeText={text => this.setState({ text })}
-            value={this.state.text}
+            onChangeText={text => this.setState({ name: text })}
+            value={this.state.name}
             style={styles.input}
             placeholder="YOUR NAME"
             placeholderTextColor="rgba(128, 0, 42, 0.4)"
@@ -68,9 +116,51 @@ class App extends React.Component {
             color="rgba(128, 0, 42, 0.7)"
           />
         </View>
-        <TouchableOpacity style={styles.buttonFB} onPress={this.saveInfo.bind()}>
+        <View style={{ marginTop: 5 }}>
+          <TextInput
+            onChangeText={text => this.setState({ age: text })}
+            value={this.state.age}
+            style={styles.input}
+            placeholder="YOUR AGE"
+            placeholderTextColor="rgba(128, 0, 42, 0.4)"
+          />
+          <Icon
+            style={styles.icon}
+            name="user"
+            size={45}
+            color="rgba(128, 0, 42, 0.7)"
+          />
+        </View>
+        <View style={{ marginTop: 5 }}>
+          <TextInput
+            onChangeText={text => this.setState({ salary: text })}
+            value={this.state.salary}
+            style={styles.input}
+            placeholder="YOUR SALARY"
+            placeholderTextColor="rgba(128, 0, 42, 0.4)"
+            onEndEditing={() =>this.onSubmitPressed()}
+          />
+          <Icon
+            style={styles.icon}
+            name="user"
+            size={45}
+            color="rgba(128, 0, 42, 0.7)"
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.buttonFB}
+          onPress={this.onSubmitPressed.bind()}
+        >
           <Text style={styles.btnText}>SAVE</Text>
+          {this.state.showLoading ? (
+            <ActivityIndicator
+              style={{ position: "absolute", right: 5 }}
+              size={25}
+              color="#fff"
+            />
+          ) : null}
         </TouchableOpacity>
+        {/* <FlashMessage position="top" /> */}
       </View>
     );
   }
@@ -84,7 +174,7 @@ const mapStateToProps = state => {
 
 const mapDispatchtoProps = dispatch => {
   return {
-    getUserInfo: (user) => dispatch(storeUserInfo(user)),
+    getUserInfo: user => dispatch(storeUserInfo(user))
   };
 };
 
@@ -133,5 +223,5 @@ const styles = StyleSheet.create({
   icon: {
     position: "absolute",
     top: 3
-  },
+  }
 });

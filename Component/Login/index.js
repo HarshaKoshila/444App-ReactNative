@@ -22,7 +22,7 @@ import { storeUserInfo } from "../../Action/Login/reducerAction.js";
 
 import logoImage from "../../Images/logo.png";
 
-const { width: WIDTH } = Dimensions.get("window");
+var {height, width} = Dimensions.get('window')
 
 // _storeData = async (id) => {
 //   try {
@@ -68,8 +68,7 @@ class App extends React.Component {
     } else {
       this.setState({showLoading: true})
       setTimeout(() => {
-      getDummyEmployeeData(this.state.userID).then(data => {
-        //Get valid UserID from http://dummy.restapiexample.com/api/v1/employees 
+      getDummyEmployeeData(this.state.userID).then(data => { 
         this.setState({showLoading: false})
         if (data === false) {
           this.setState({ errorMsg: data });
@@ -109,6 +108,7 @@ class App extends React.Component {
               placeholderTextColor="rgba(128, 0, 42, 0.4)"
               onChangeText={text => this.setState({ userID: text })}
               value={this.state.userID}
+              onEndEditing={() =>this.onPressLoginBtn()}
             />
             <Icon
               style={styles.icon}
@@ -162,7 +162,6 @@ class App extends React.Component {
             onPress={this.onPressLoginBtn.bind()}
           >
             <Text style={styles.btnText}>LOGIN</Text>
-            {this.state.showLoading ? <ActivityIndicator style={{ position: 'absolute', right: 5}} size={25} color="#fff" /> : null}
           </TouchableOpacity>
           <TouchableOpacity style={styles.buttonFB}>
             <Text style={styles.btnText}>LOGIN WITH FACEBOOK</Text>
@@ -174,7 +173,11 @@ class App extends React.Component {
             </Text>
           </Text>
         </View>
-        <FlashMessage position="top" />
+        {this.state.showLoading ? 
+        <View style={styles.subHeaderImage}>
+        <ActivityIndicator size={80} color="#e60073" /> 
+        </View> : null }
+
       </View>
     );
   }
@@ -221,7 +224,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    width: WIDTH - 55,
+    width: width - 55,
     fontSize: 18,
     height: 45,
     color: "#262626",
@@ -245,7 +248,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    width: WIDTH - 55,
+    width: width - 55,
     fontSize: 18,
     height: 45,
     color: "rgb(231, 228, 228)",
@@ -258,7 +261,7 @@ const styles = StyleSheet.create({
   },
 
   buttonFB: {
-    width: WIDTH - 55,
+    width: width - 55,
     fontSize: 18,
     height: 45,
     color: "rgb(231, 228, 228)",
@@ -289,5 +292,28 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "300",
     textAlign: "center"
-  }
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  subHeaderImage: {
+    height: height,
+    width: width,
+    //marginTop: 50,
+    //marginLeft: 20,
+    //marginRight: 20, 
+    //borderRadius:10, 
+    backgroundColor: 'rgba(52, 52, 52, 0.7)',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center', 
+},
+
 });

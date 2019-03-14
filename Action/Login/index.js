@@ -6,8 +6,7 @@ export async function getDummyEmployeeData(id) {
         method: "GET",
         headers: {
           Accept: "application/json",
-          "User-Agent":
-            "Mozilla/5.0 (compatible; Rigor/1.0.0; http://rigor.com)",
+          "User-Agent": "Mozilla/5.0 (compatible; Rigor/1.0.0; http://rigor.com)",
           "Content-Type": "application/json"
         }
       }
@@ -22,6 +21,22 @@ export async function getDummyEmployeeData(id) {
   } catch (error) {
     return "Check Your Internet Connection";
   }
+}
+
+export async function updateDummyEmployeeData(id, name, salary, age) {
+  const API = `http://dummy.restapiexample.com/api/v1/update/${id}`;
+  const reqOptions = {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+          "User-Agent": "Mozilla/5.0 (compatible; Rigor/1.0.0; http://rigor.com)",
+          "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name: name, salary: salary, age: age })
+  };
+
+  let response = await fetch(API, reqOptions);
+  return response;
 }
 
 export function getUserInfo() {
